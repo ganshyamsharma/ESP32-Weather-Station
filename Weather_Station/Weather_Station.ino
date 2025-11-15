@@ -24,7 +24,7 @@ char hum[50];
 char ppm[50];  
 int cnt = 0;             
 unsigned long lastRead = 0;
-const unsigned long interval = 2000; // read sensor every 2s
+const unsigned long interval = 1800; // read sensor every 2s
 
 void setup() {
   Serial.begin(9600);
@@ -40,8 +40,12 @@ void loop() {
   // Read DHT every 2 seconds
   if (millis() - lastRead > interval) {
     lastRead = millis();
-
-    int gas_ppm = analogRead(MQ135_data_pin)/4;
+    int cum_ppm = 0;
+    for(int g = 0; g < 10; g++){
+      cum_ppm = cum_ppm + analogRead(MQ135_data_pin)/4;
+      delay(20);
+    }
+    int gas_ppm = cum_ppm / 10;
     float h = dht.readHumidity();
     float t = dht.readTemperature();
        
